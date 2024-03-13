@@ -13,7 +13,7 @@
         </div>
 
         <div class="mt-12 mx-5">
-            <form class="max-w-min mx-auto ">
+            <form class="max-w-min mx-auto "  @submit.prevent="Enviar">
 
                 <div class="relative z-0 w-full mb-5 group">
                     <input v-model="form.nome" type="text" name="floating_nome" id="floating_nome"
@@ -143,7 +143,7 @@
                         <textarea v-model="form.observacao" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500  " placeholder="Sua observação..."></textarea>
                     </div>
 
-                <button type="button"  @click="Enviar"
+                <button type="submit"
                     class="mt-5 mb-7 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Enviar</button>
             </form>
 
@@ -199,7 +199,8 @@ const form = useForm({
     escritorio: '',
     condominio: '',
     endereco: '',
-    observacao: ''
+    observacao: '',
+    servicos: {}
 });
 
 
@@ -226,30 +227,23 @@ const currentService = (service) => {
 
 const Enviar = () => {
 
-    // Filtra apenas os serviços que têm quantidade maior que zero
-    const servicosSelecionados = services.value.filter(service => service.quantity > 0);
+   // Filtra apenas os serviços que têm quantidade maior que zero
+   const servicosSelecionados = services.value.filter(service => service.quantity > 0);
 
-    // Cria um objeto com os dados do formulário e os serviços selecionados
-    const dadosDoFormulario = {
-        nome: form.nome,
-        email: form.email,
-        telefone: form.telefone,
-        cnpj_cpf: form.cnpj_cpf,
-        endereco: form.endereco,
-        escola: form.escola ? 'Sim' : 'Não',
-        escritorio: form.escritorio ? 'Sim' : 'Não',
-        condominio: form.condominio ? 'Sim' : 'Não',
-        observacao: form.observacao,
-        servicos: servicosSelecionados
-    };
+// Adiciona os serviços selecionados ao objeto form
+form.servicos = servicosSelecionados;
 
-    // Envia os dados para o endpoint '/enviar'
-    router.post('/enviar', dadosDoFormulario).then(response => {
-        console.log('Formulário enviado com sucesso!', response);
-    }).catch(error => {
-        console.error('Erro ao enviar o formulário:', error);
-    });
+// Converte os valores dos checkboxes para 'sim' ou 'não'
+form.condominio = form.condominio ? 'sim' : 'não';
+    form.escritorio = form.escritorio ? 'sim' : 'não';
+    form.escola = form.escola ? 'sim' : 'não';
 
+// Envia os dados para o endpoint '/enviar'
+form.post('/enviar').then(response => {
+    console.log('Formulário enviado com sucesso!', response);
+}).catch(error => {
+    console.error('Erro ao enviar o formulário:', error);
+});
 
 };
 

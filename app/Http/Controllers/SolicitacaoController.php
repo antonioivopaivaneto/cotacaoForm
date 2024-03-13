@@ -37,7 +37,6 @@ class SolicitacaoController extends Controller
     public function enviar(Request $request)
     {
 
-        dd($request->all());
         $dados = $request->all();
         dispatch(new SendMailCotacaoJob($dados ));
 
