@@ -35,7 +35,7 @@ class SendMailCotacaoJob implements ShouldQueue
     public function handle()
     {
 
-        Mail::to('antonioivo.3@gmail.com')
+        Mail::to('comercial@safetyfacilities.com.br')
         ->cc(['antonioivo.3@gmail.com',])
         ->send(new EnviarCotacaoMail($this->dados));
     }
